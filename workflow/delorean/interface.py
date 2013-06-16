@@ -1,6 +1,7 @@
 from datetime import datetime
 
 from pytz import timezone
+import pytz
 from dateutil.rrule import rrule, DAILY, HOURLY, MONTHLY, YEARLY
 from dateutil.parser import parse as capture
 
@@ -10,6 +11,22 @@ from .dates import Delorean, is_datetime_naive, datetime_timezone
 UTC = "UTC"
 utc = timezone("utc")
 
+# Add TZ Abrevs here
+tz_abr = {'EST': 'US/Eastern',
+          'EDT': 'US/Eastern',
+          'CST': 'US/Central',
+          'CDT': 'US/Central',
+          'MST': 'US/Mountain',
+          'MDT': 'US/Mountain',
+          'PST': 'US/Pacific',
+          'PDT': 'US/Pacific'}
+
+def convert_tzs_offsets(string):
+    for zone in pytz.common_timezones:
+        if zone in string:
+            offset = datetime.now(pytz.timezone(zone)).strftime('%z')
+            string = string.replace(zone, offset)
+    return string
 
 def parse(s, dayfirst=True, yearfirst=True):
     """
@@ -20,6 +37,19 @@ def parse(s, dayfirst=True, yearfirst=True):
     timezone will be returned.
     """
     try:
+        # Cheap handle common US tz abreviations
+        for abr, repl in tz_abr.iteritems():
+            if abr in s:
+                s = s.replace(abr, repl)
+        target_timezone = None
+        if ' to ' in s or ' in ' in s:
+            for search in (' to ', ' in '):
+                if s.find(search) > 0:
+                    pos = s.rfind(search)
+                    sstr = len(search)
+            target_timezone = s[pos + sstr:].strip()
+            s = s[:pos].strip()
+        s = convert_tzs_offsets(s)
         dt = capture(s, dayfirst=dayfirst, yearfirst=yearfirst)
     except:
         # raise a parsing error.
@@ -34,6 +64,8 @@ def parse(s, dayfirst=True, yearfirst=True):
         # if parse string has tzinfo we return a normalized UTC
         # delorean object that represents the time.
         do = Delorean(datetime=dt, timezone=UTC)
+        if target_timezone:
+            do.shift(target_timezone)
     return do
 
 
