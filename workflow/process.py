@@ -55,14 +55,15 @@ def alfred_items_for_value(value):
     index += 1
 
     # Local time
-    arrow_time = arrow.get(value.datetime).to('local')
+    arrow_time = arrow.get(value.datetime).to('local') 
+    item_value = arrow_time.datetime.strftime("%a, %d %b %Y %H:%M:%S")
     timezone = arrow_time.datetime.strftime('%Z')
     results.append(alfred.Item(
-        title=arrow_time.datetime.strftime("%a, %d %b %Y %H:%M:%S"),
+        title=item_value,
         subtitle=u'Local time (%s)' % timezone,
         attributes={
             'uid': alfred.uid(index),
-            'arg': item_value,
+            'arg': item_value + " " + timezone,
         },
         icon='icon.png',
     ))
