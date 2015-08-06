@@ -21,6 +21,8 @@ def parse_query_value(query_str):
         else:
             # Parse datetime string or timestamp
             try:
+                if query_str.isdigit() and len(query_str) == 13:
+                    query_str = query_str[:10] + '.' + query_str[10:]
                 d = epoch(float(query_str))
             except ValueError:
                 d = parse(str(query_str))
