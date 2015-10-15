@@ -45,13 +45,15 @@
 			<key>config</key>
 			<dict>
 				<key>argumenttype</key>
-				<integer>0</integer>
+				<integer>1</integer>
 				<key>escaping</key>
 				<integer>36</integer>
 				<key>keyword</key>
 				<string>df</string>
 				<key>script</key>
-				<string>python process.py "{query}"</string>
+				<string>QQ="{query}"
+if [ -z "$QQ" ]; then QQ="now"; fi
+python process.py "$QQ"</string>
 				<key>subtext</key>
 				<string>Examples: 1364302555, 2013-01-15 19:41:06, now</string>
 				<key>title</key>
