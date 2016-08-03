@@ -14,3 +14,9 @@ This will present you with the parsed date in various formats ready to copy to y
 ![Screenshot](https://raw.github.com/mwaterfall/alfred-datetime-format-converter/master/download/screenshot_1.png)
 ![Screenshot](https://raw.github.com/mwaterfall/alfred-datetime-format-converter/master/download/screenshot_2.png)
 ![Screenshot](https://raw.github.com/mwaterfall/alfred-datetime-format-converter/master/download/screenshot_3.png)
+
+Develop
+-------
+
+Install the workflow, then open the installed workflow folder and modify the
+files there.

@@ -3,6 +3,7 @@
 import alfred
 import arrow
 import calendar
+
 from delorean import utcnow, parse, epoch
 
 
@@ -32,6 +33,23 @@ def parse_query_value(query_str):
     return d
 
 
+def get_list_item(value, timezone, subtitle, index):
+    """Return Alfred list item."""
+    arrow_time = arrow.get(value).to(timezone)
+    time_to_show = arrow_time.datetime.strftime("%a, %d %b %Y %H:%M:%S %Z")
+
+    item = alfred.Item(
+        title=time_to_show,
+        subtitle=subtitle,
+        attributes={
+            'uid': alfred.uid(index),
+            'arg': time_to_show,
+        },
+        icon='icon.png',
+    )
+    return item
+
+
 def alfred_items_for_value(value):
     """
     Given a delorean datetime object, return a list of
@@ -55,19 +73,13 @@ def alfred_items_for_value(value):
     index += 1
 
     # Local time
-    arrow_time = arrow.get(value.datetime).to('local') 
-    item_value = arrow_time.datetime.strftime("%a, %d %b %Y %H:%M:%S")
-    timezone = arrow_time.datetime.strftime('%Z')
-    results.append(alfred.Item(
-        title=item_value,
-        subtitle=u'Local time (%s)' % timezone,
-        attributes={
-            'uid': alfred.uid(index),
-            'arg': item_value + " " + timezone,
-        },
-        icon='icon.png',
-    ))
-    index += 1
+    for timezone in ('local', 'america/los_angeles'):
+        results.append(get_list_item(
+            value.datetime,
+            timezone,
+            "Other time (%s)" % timezone,
+            index))
+        index += 1
 
     # Various formats
     formats = [
