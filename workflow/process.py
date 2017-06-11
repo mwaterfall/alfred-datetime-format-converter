@@ -49,6 +49,18 @@ def alfred_items_for_value(value):
         icon='icon.png',
     ))
     index += 1
+    
+    #Add support for UTC timestamps in millisecond format
+    results.append(alfred.Item(
+        title=str(int(item_value)*int('1000')),
+        subtitle=u'UTC Timestamp (Milliseconds)',
+        attributes={
+            'uid': alfred.uid(index), 
+            'arg': int(item_value)*int('1000'),
+        },
+        icon='icon.png',
+    ))
+    index += 1
 
     # Various formats
     formats = [
