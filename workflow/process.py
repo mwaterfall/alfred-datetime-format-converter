@@ -20,6 +20,8 @@ def parse_query_value(query_str):
             d = utcnow()
         else:
             # Parse datetime string or timestamp
+            if len(query_str) == 13:
+                query_str = int(query_str)/int('1000')
             try:
                 d = epoch(float(query_str))
             except ValueError:
