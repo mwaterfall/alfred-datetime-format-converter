@@ -18,6 +18,24 @@ def parse_query_value(query_str):
         query_str = str(query_str).strip('"\' ')
         if query_str == 'now':
             d = utcnow()
+            
+        elif query_str == 'yesterday':
+        	d =	utcnow().last_day()
+
+        elif query_str == 'last month' or query_str == '1 month ago':
+        	d =	utcnow().last_month()
+        elif ' months ago' in query_str:
+        	splitted = query_str.split(' ')
+        	mont_count = float(splitted[0])
+        	d =	utcnow().last_month(mont_count)
+
+        elif query_str == 'last year' or query_str == '1 year ago':
+        	d =	utcnow().last_year()
+        elif ' years ago' in query_str:
+        	splitted = query_str.split(' ')
+        	year_count = float(splitted[0])
+        	d =	utcnow().last_year(year_count)
+
         else:
             # Parse datetime string or timestamp
             try:
