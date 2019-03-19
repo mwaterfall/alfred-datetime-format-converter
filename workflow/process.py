@@ -18,6 +18,31 @@ def parse_query_value(query_str):
         query_str = str(query_str).strip('"\' ')
         if query_str == 'now':
             d = utcnow()
+
+        elif query_str == 'yesterday' or query_str == '1 day ago':
+            d = utcnow().last_day()
+        elif ' days ago' in query_str:
+            count = count_from_query(query_str)
+            d = utcnow().last_day(count)
+
+        elif query_str == 'last week' or query_str == '1 week ago':
+            d = utcnow().last_week()
+        elif ' weeks ago' in query_str:
+            count = count_from_query(query_str)
+            d = utcnow().last_week(count)
+
+        elif query_str == 'last month' or query_str == '1 month ago':
+            d = utcnow().last_month()
+        elif ' months ago' in query_str:
+            count = count_from_query(query_str)
+            d = utcnow().last_month(count)
+
+        elif query_str == 'last year' or query_str == '1 year ago':
+        	d =	utcnow().last_year()
+        elif ' years ago' in query_str:
+        	count = count_from_query(query_str)
+        	d =	utcnow().last_year(count)
+
         else:
             # Parse datetime string or timestamp
             try:
@@ -27,6 +52,11 @@ def parse_query_value(query_str):
     except (TypeError, ValueError):
         d = None
     return d
+
+def count_from_query(query):
+    splitted = query_str.split(' ')
+    return float(splitted[0])
+
 
 def alfred_items_for_value(value):
     """

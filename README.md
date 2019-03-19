@@ -5,6 +5,8 @@ Alfred 2 workflow for converting between timestamps and formatted datetime strin
 
 Simply type "df" followed by: "now", a UTC unix timestamp, or a formatted datetime string.
 
+You can also type e.g. "1 day ago", "4 weeks ago" or "yesterday" to get the corresponding timestamp values.
+
 This will present you with the parsed date in various formats ready to copy to your clipboard.
 
 [Download](https://raw.github.com/mwaterfall/alfred-datetime-format-converter/master/download/DatetimeFormatConverter.alfredworkflow)
