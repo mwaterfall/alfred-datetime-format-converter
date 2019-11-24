@@ -1,8 +1,13 @@
 # -*- coding: utf-8 -*-
 
+from pytz import timezone
+
 import alfred
 import calendar
 from delorean import utcnow, parse, epoch
+
+PRC = timezone('PRC')
+
 
 def process(query_str):
     """ Entry point """
@@ -11,6 +16,7 @@ def process(query_str):
         results = alfred_items_for_value(value)
         xml = alfred.xml(results) # compiles the XML answer
         alfred.write(xml) # writes the XML back to Alfred
+
 
 def parse_query_value(query_str):
     """ Return value for the query string """
@@ -28,6 +34,7 @@ def parse_query_value(query_str):
         d = None
     return d
 
+
 def alfred_items_for_value(value):
     """
     Given a delorean datetime object, return a list of
@@ -38,10 +45,12 @@ def alfred_items_for_value(value):
     results = []
 
     # First item as timestamp
-    item_value = calendar.timegm(value.datetime.utctimetuple())
+    utc_dt = value.datetime
+    prc_dt = utc_dt.astimezone(PRC)
+    item_value = calendar.timegm(prc_dt.utctimetuple())
     results.append(alfred.Item(
         title=str(item_value),
-        subtitle=u'UTC Timestamp',
+        subtitle=u'PRC Timestamp',
         attributes={
             'uid': alfred.uid(index), 
             'arg': item_value,
@@ -64,7 +73,7 @@ def alfred_items_for_value(value):
         ("%Y-%m-%dT%H:%M:%S%z", ''),
     ]
     for format, description in formats:
-        item_value = value.datetime.strftime(format)
+        item_value = prc_dt.strftime(format)
         results.append(alfred.Item(
             title=str(item_value),
             subtitle=description,
@@ -75,8 +84,8 @@ def alfred_items_for_value(value):
         icon='icon.png',
         ))
         index += 1
-
     return results
+
 
 if __name__ == "__main__":
     try:
