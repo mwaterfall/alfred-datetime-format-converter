@@ -4,6 +4,12 @@ import alfred
 import calendar
 from delorean import utcnow, parse, epoch
 
+def get_timezone():
+    tz = alfred.env_arg('timezone')
+    if not tz:
+        tz = 'UTC'
+    return tz
+
 def process(query_str):
     """ Entry point """
     value = parse_query_value(query_str)
@@ -23,7 +29,7 @@ def parse_query_value(query_str):
             try:
                 d = epoch(float(query_str))
             except ValueError:
-                d = parse(str(query_str))
+                d = parse(str(query_str), get_timezone())
     except (TypeError, ValueError):
         d = None
     return d
@@ -51,20 +57,24 @@ def alfred_items_for_value(value):
     index += 1
 
     # Various formats
+    tz = get_timezone()
     formats = [
         # 1937-01-01 12:00:27
-        ("%Y-%m-%d %H:%M:%S", ''),
+        ("%Y-%m-%d %H:%M:%S", tz),
         # 19 May 2002 15:21:36
-        ("%d %b %Y %H:%M:%S", ''), 
+        ("%d %b %Y %H:%M:%S", tz),
         # Sun, 19 May 2002 15:21:36
-        ("%a, %d %b %Y %H:%M:%S", ''), 
+        ("%a, %d %b %Y %H:%M:%S", tz),
         # 1937-01-01T12:00:27
-        ("%Y-%m-%dT%H:%M:%S", ''),
+        ("%Y-%m-%dT%H:%M:%S", tz),
         # 1996-12-19T16:39:57-0800
-        ("%Y-%m-%dT%H:%M:%S%z", ''),
+        ("%Y-%m-%dT%H:%M:%S%z", tz),
     ]
     for format, description in formats:
-        item_value = value.datetime.strftime(format)
+        tz_value = value
+        if description:
+            tz_value = value.shift(description)
+        item_value = tz_value.datetime.strftime(format)
         results.append(alfred.Item(
             title=str(item_value),
             subtitle=description,
