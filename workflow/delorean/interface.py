@@ -11,7 +11,7 @@ UTC = "UTC"
 utc = timezone("utc")
 
 
-def parse(s, dayfirst=True, yearfirst=True):
+def parse(s, tz=UTC, dayfirst=True, yearfirst=True):
     """
     Parses a datetime string in it and returns a `Delorean` object.
 
@@ -25,8 +25,8 @@ def parse(s, dayfirst=True, yearfirst=True):
         # raise a parsing error.
         raise ValueError("Unknown string format")
     if dt.tzinfo is None:
-        # assuming datetime object passed in is UTC
-        do = Delorean(datetime=dt, timezone=UTC)
+        # assuming datetime object passed in is tz given
+        do = Delorean(datetime=dt, timezone=tz)
     else:
         dt = utc.normalize(dt)
         # makeing dt naive so we can pass it to Delorean

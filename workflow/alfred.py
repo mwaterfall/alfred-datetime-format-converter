@@ -55,6 +55,9 @@ class Item(object):
 def args(characters=None):
     return tuple(unescape(decode(arg), characters) for arg in sys.argv[1:])
 
+def env_arg(name):
+    return os.getenv(name)
+
 def config():
     return _create('config')
 
@@ -71,10 +74,10 @@ def unescape(query, characters=None):
 
 def work(volatile):
     path = {
-        True: '~/Library/Caches/com.runningwithcrayons.Alfred-2/Workflow Data',
-        False: '~/Library/Application Support/Alfred 2/Workflow Data'
+        true: env_arg('alfred_workflow_cache'), # using alfred env variable instead of fixed string
+        false: env_arg('alfred_workflow_data')
     }[bool(volatile)]
-    return _create(os.path.join(os.path.expanduser(path), bundleid))
+    return _create(os.path.expanduser(path))
 
 def write(text):
     sys.stdout.write(text)
